@@ -9,127 +9,39 @@
 					</p>
 				</div>
 				<div class="client client--info">
-					<div class="fullname">
-						<div
-							class="client--info__surname"
-							:class="{ alert: $v.info.fullname.surname.$error }"
-						>
-							<label for="surname">
-								Фамилия
-								<p class="required">*</p>
-							</label>
-							<input
-								type="text"
-								name="surname"
-								id="surname"
-								placeholder="Введите фамилию"
-								v-model.trim="info.fullname.surname"
-								@input="$v.info.fullname.surname.$touch()"
-							/>
-							<div class="message">Поле фамилия должен быть заполнен</div>
-						</div>
-						<div
-							class="client--info__name"
-							:class="{ alert: $v.info.fullname.name.$error }"
-						>
-							<label for="name">
-								Имя
-								<p class="required">*</p>
-							</label>
-							<input
-								type="text"
-								name="name"
-								id="name"
-								placeholder="Введите имя"
-								v-model.trim="info.fullname.name"
-								@input="$v.info.fullname.name.$touch()"
-							/>
-							<div class="message">Поле имя должен быть заполнен</div>
-						</div>
-					</div>
-					<div class="client--info__patronymic">
-						<label for="patronymic">Отчество</label>
+					<field
+						v-for="(field, index) in info.fullname"
+						:key="`field-${index}`"
+						:field="field"
+						:v="field.isRequired ? $v.info.fullname[index].value : null"
+					/>
+					<field :field="info.birthday" :v="$v.info.birthday.value" />
+					<div class="client--info__phone" :class="{ alert: $v.info.phone.$error }">
+						<label for="phone">
+							Номер телефона
+							<p class="required">*</p>
+						</label>
 						<input
-							type="text"
-							name="patronymic"
-							id="patronymic"
-							placeholder="Введите отчество"
-							v-model.trim="info.fullname.patronymic"
+							type="tel"
+							name="phone"
+							id="phone"
+							placeholder="7XXXXXXXXXX"
+							v-model.trim="info.phone"
+							@input="$v.info.phone.$touch()"
 						/>
-					</div>
-					<div class="birthday-phone">
-						<div
-							class="client--info__birthday"
-							:class="{ alert: $v.info.birthday.$error }"
-						>
-							<label for="birthday">
-								Дата рождения
-								<p class="required">*</p>
-							</label>
-							<input
-								type="date"
-								name="birthday"
-								id="birthday"
-								v-model="info.birthday"
-								@change="$v.info.birthday.$touch()"
-							/>
-							<div class="message">Поле дата рождения должен быть заполнен</div>
-						</div>
-						<div class="client--info__phone" :class="{ alert: $v.info.phone.$error }">
-							<label for="phone">
-								Номер телефона
-								<p class="required">*</p>
-							</label>
-							<input
-								type="tel"
-								name="phone"
-								id="phone"
-								placeholder="Пример: 7XXXXXXXXXX"
-								v-model.trim="info.phone"
-								@input="$v.info.phone.$touch()"
-							/>
-							<div v-if="!$v.info.phone.minLength" class="message">
-								Должен быть минимум
-								{{ $v.info.phone.$params.minLength.min }} цифр
-							</div>
-							<div v-else-if="!$v.info.phone.required" class="message">
-								Поле телефон должен быть заполнен
-							</div>
-						</div>
+						<p v-if="!$v.info.phone.minLength" class="message">
+							Должен быть минимум {{ $v.info.phone.$params.minLength.min }} цифр
+						</p>
+						<p v-else class="message">Поле телефон должен быть заполнен</p>
 					</div>
 					<div class="client--info__sex">
 						<label for="sex">Пол</label>
 						<div class="sex">
-							<div class="sex__option">
-								<input
-									type="radio"
-									name="sex"
-									id="male"
-									value="male"
-									v-model="info.sex"
-								/>
-								<label for="male">Мужчина</label>
-							</div>
-							<div class="sex__option">
-								<input
-									type="radio"
-									name="sex"
-									id="female"
-									value="female"
-									v-model="info.sex"
-								/>
-								<label for="female">Женщина</label>
-							</div>
-							<div class="sex__option">
-								<input
-									type="radio"
-									name="sex"
-									id="other"
-									value="other"
-									v-model="info.sex"
-								/>
-								<label for="other">Другое</label>
-							</div>
+							<radio-option
+								v-for="(sex, index) in info.sexList"
+								:key="`sex-${index}`"
+								:sex="sex"
+							/>
 						</div>
 					</div>
 					<div class="client--info__group" :class="{ alert: $v.info.group.$error }">
@@ -332,14 +244,69 @@
 
 <script>
 import { required, minLength } from 'vuelidate/lib/validators';
+import RadioOption from '../components/RadioOption';
+import Field from '../components/Field';
+
 export default {
 	name: 'app',
+	components: { RadioOption, Field },
 	data: () => ({
 		info: {
-			fullname: { surname: '', name: '', patronymic: '' },
-			birthday: '',
+			fullname: {
+				surname: {
+					className: 'client--info__surname',
+					isRequired: true,
+					event: 'change',
+					label: 'Фамилия',
+					id: 'surname',
+					type: 'text',
+					name: 'surname',
+					placeholder: 'Введите фамилию',
+					message: 'Поле фамилия должен быть заполнен',
+					value: '',
+				},
+				name: {
+					className: 'client--info__name',
+					isRequired: true,
+					event: 'change',
+					label: 'Имя',
+					id: 'name',
+					type: 'text',
+					name: 'name',
+					placeholder: 'Введите имя',
+					message: 'Поле имя должен быть заполнен',
+					value: '',
+				},
+				patronymic: {
+					className: 'client--info__patronymic',
+					isRequired: false,
+					event: 'change',
+					label: 'Отчество',
+					id: 'patronymic',
+					type: 'text',
+					name: 'patronymic',
+					placeholder: 'Введите отчество',
+					value: '',
+				},
+			},
+			birthday: {
+				className: 'client--info__birthday',
+				isRequired: true,
+				event: 'change',
+				label: 'Дата рождения',
+				id: 'birthday',
+				type: 'date',
+				name: 'birthday',
+				placeholder: 'Введите день рождение',
+				message: 'Поле дата рождения должен быть заполнен',
+				value: '',
+			},
 			phone: '',
-			sex: 'other',
+			sexList: [
+				{ name: 'sex', id: 'male', value: 'male', label: 'Мужчина' },
+				{ name: 'sex', id: 'female', value: 'female', label: 'Женщина' },
+				{ name: 'sex', id: 'other', value: 'other', label: 'Другое' },
+			],
 			group: [],
 			doctor: '',
 			send: false,
@@ -383,10 +350,10 @@ export default {
 	validations: () => ({
 		info: {
 			fullname: {
-				surname: { required },
-				name: { required },
+				surname: { value: { required } },
+				name: { value: { required } },
 			},
-			birthday: { required, minLength: minLength(10) },
+			birthday: { value: { required, minLength: minLength(10) } },
 			phone: { required, minLength: minLength(11) },
 			group: { required },
 		},

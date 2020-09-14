@@ -42,7 +42,7 @@ label {
 
 .message {
 	margin-top: 10px;
-	color: red;
+	font-size: calc(var(--font-size) / 1.25);
 	opacity: 0;
 }
 
@@ -74,9 +74,6 @@ label {
 		border-color: red;
 	}
 	.message {
-		margin-top: 10px;
-		color: red;
-		font-size: calc(var(--font-size) / 1.25);
 		opacity: 1;
 	}
 }
@@ -173,32 +170,20 @@ label {
 		.form {
 			.client {
 				&--info {
-					.fullname,
-					.birthday-phone {
-						display: flex;
-						flex-direction: row;
-						justify-content: space-between;
-						> div {
-							width: 48%;
-						}
+					> div {
+						width: 48%;
 					}
 					.sex {
 						flex-direction: column;
 					}
-					&__patronymic {
-						> input {
-							width: 48%;
-						}
-					}
 					&__sex,
-					&__group,
-					&__doctor {
-						width: 48%;
-					}
-					&__sex {
+					&__surname,
+					&__patronymic {
 						float: left;
 					}
-					&__group {
+					&__group,
+					&__name,
+					&__birthday {
 						float: right;
 					}
 				}
