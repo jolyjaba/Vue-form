@@ -6,7 +6,7 @@ import App from '../pages/App';
 import '../styles/style';
 import '../index';
 
-Vue.config.devTools = true;
+Vue.config.devtools = false;
 
 Vue.use(Vuelidate);
 new Vue({
