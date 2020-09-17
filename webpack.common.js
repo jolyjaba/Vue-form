@@ -31,7 +31,7 @@ module.exports = {
 		}),
 	],
 	resolve: {
-		extensions: ['.vue', '.js', '.scss'],
+		extensions: ['.vue', '.js', '.scss', '.html'],
 	},
 	module: {
 		rules: [

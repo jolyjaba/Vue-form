@@ -1,10 +1,10 @@
 import Vue from 'vue/dist/vue';
 import Vuelidate from 'vuelidate';
 
-import App from '../pages/App.vue';
+import App from '../pages/App';
 
-import '../styles/style.scss';
-import '../index.html';
+import '../styles/style';
+import '../index';
 
 Vue.config.devTools = true;
 

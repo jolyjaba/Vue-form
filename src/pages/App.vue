@@ -16,24 +16,7 @@
 						:v="field.isRequired ? $v.info.fullname[index].value : null"
 					/>
 					<field :field="info.birthday" :v="$v.info.birthday.value" />
-					<div class="client--info__phone" :class="{ alert: $v.info.phone.$error }">
-						<label for="phone">
-							Номер телефона
-							<p class="required">*</p>
-						</label>
-						<input
-							type="tel"
-							name="phone"
-							id="phone"
-							placeholder="7XXXXXXXXXX"
-							v-model.trim="info.phone"
-							@input="$v.info.phone.$touch()"
-						/>
-						<p v-if="!$v.info.phone.minLength" class="message">
-							Должен быть минимум {{ $v.info.phone.$params.minLength.min }} цифр
-						</p>
-						<p v-else class="message">Поле телефон должен быть заполнен</p>
-					</div>
+					<field :field="info.phone" :v="$v.info.phone.value" />
 					<div class="client--info__sex">
 						<label for="sex">Пол</label>
 						<div class="sex">
@@ -71,77 +54,15 @@
 							<option value="3">Чернышева</option>
 						</select>
 					</div>
-					<div class="send-message">
-						<label for="send">Не отправлять СМС</label>
-						<input type="checkbox" name="send-message" id="send" v-model="info.send" />
-					</div>
+					<field :field="info.send" />
 				</div>
 				<div class="client client--address">
-					<div class="client--address__index">
-						<label for="index">Индекс</label>
-						<input
-							type="number"
-							name="index"
-							id="index"
-							placeholder="Введите индекс города"
-							v-model.trim="address.index"
-						/>
-					</div>
-					<div class="client--address__country">
-						<label for="country">Страна</label>
-						<input
-							type="text"
-							name="country"
-							id="country"
-							placeholder="Введите страну"
-							v-model.trim="address.country"
-						/>
-					</div>
-					<div class="client--address__region">
-						<label for="region">Область</label>
-						<input
-							type="text"
-							name="region"
-							id="region"
-							placeholder="Введите область"
-							v-model.trim="address.region"
-						/>
-					</div>
-					<div class="client--address__city" :class="{ alert: $v.address.city.$error }">
-						<label for="city">
-							Город
-							<p class="required">*</p>
-						</label>
-						<input
-							type="text"
-							name="city"
-							id="city"
-							placeholder="Введите город"
-							v-model.trim="address.city"
-							@change="$v.address.city.$touch()"
-						/>
-						<div class="message">Поле город должен быть заполнен</div>
-					</div>
-					<div class="client--address__street">
-						<label for="street">Улица</label>
-						<input
-							type="text"
-							name="street"
-							id="street"
-							placeholder="Введите улицу"
-							v-model="address.street"
-						/>
-					</div>
-					<div class="client--address__home">
-						<label for="home">Дом</label>
-						<input
-							type="text"
-							name="home"
-							id="home"
-							placeholder="Введите адрес дома"
-							v-model="address.home"
-						/>
-					</div>
+					<field
+						v-for="(item, index) in address"
+						:key="`address-${index}`"
+						:field="item"
+						:v="item.isRequired ? $v.address[index].value : null"
+					/>
 				</div>
 				<div class="client client--passport">
 					<div class="client--passport__type" :class="{ alert: $v.passport.type.$error }">
@@ -162,81 +83,18 @@
 						</select>
 						<div class="message">Поле тип документ должен быть выбран</div>
 					</div>
-					<div class="client--passport__series">
-						<label for="series">Серия</label>
-						<input
-							type="text"
-							name="series"
-							id="series"
-							placeholder="Введите серию"
-							v-model="passport.series"
-						/>
-					</div>
-					<div class="client--passport__id">
-						<label for="number">Номер</label>
-						<input
-							type="number"
-							name="number"
-							id="number"
-							placeholder="Введите номер"
-							v-model="passport.id"
-						/>
-					</div>
-					<div class="client--passport__issued">
-						<label for="issued">Кем выдан</label>
-						<input
-							type="text"
-							name="issued"
-							id="issued"
-							placeholder="Введите организацию"
-							v-model="passport.issued"
-						/>
-					</div>
-					<div
-						class="client--passport__issued-date"
-						:class="{ alert: $v.passport.date.$error }"
-					>
-						<label for="issuedDate">
-							Дата выдачи
-							<p class="required">*</p>
-						</label>
-						<input
-							type="date"
-							name="issuedDate"
-							id="issuedDate"
-							v-model="passport.date"
-							@change="$v.passport.date.$touch()"
-						/>
-						<div v-if="!$v.passport.date.required" class="message">
-							Поле дата выдачи должен быть заполнен
-						</div>
-						<div v-else class="message">
-							Не верный формат даты
-						</div>
-					</div>
+					<field :field="passport.series" />
+					<field :field="passport.id" />
+					<field :field="passport.issued" />
+					<field :field="passport.date" :v="$v.passport.date.value" />
 				</div>
 				<button type="submit">Подтвердить</button>
-				<div
-					v-if="submitStatus === 'OK'"
-					:class="{ success: submitStatus === 'OK' }"
-					class="submit-status"
-				>
-					Успешно создан!
-				</div>
-				<div
-					v-if="submitStatus === 'ERROR'"
-					:class="{ alert: submitStatus === 'ERROR' }"
-					class="submit-status"
-				>
-					Проверьте форму заново!
-				</div>
-				<div
-					v-if="submitStatus === 'PENDING'"
-					:class="{ pending: submitStatus === 'PENDING' }"
-					class="submit-status"
-				>
-					Отправка...
-				</div>
+				<submit-status
+					v-for="(submit, index) in submits"
+					:key="`submit-${index}`"
+					:submit="submit"
+					:submitStatus="submitStatus"
+				/>
 			</form>
 		</div>
 	</div>
@@ -246,10 +104,11 @@
 import { required, minLength } from 'vuelidate/lib/validators';
 import RadioOption from '../components/RadioOption';
 import Field from '../components/Field';
+import SubmitStatus from '../components/SubmitStatus';
 
 export default {
 	name: 'app',
-	components: { RadioOption, Field },
+	components: { RadioOption, Field, SubmitStatus },
 	data: () => ({
 		info: {
 			fullname: {
@@ -301,7 +160,18 @@ export default {
 				message: 'Поле дата рождения должен быть заполнен',
 				value: '',
 			},
-			phone: '',
+			phone: {
+				className: 'client--info__phone',
+				isRequired: true,
+				event: 'change',
+				label: 'Номер телефона',
+				id: 'phone',
+				type: 'tel',
+				name: 'phone',
+				placeholder: '7XXXXXXXXXX',
+				message: 'Поле телефон должен быть заполнен',
+				value: '',
+			},
 			sexList: [
 				{ name: 'sex', id: 'male', value: 'male', label: 'Мужчина' },
 				{ name: 'sex', id: 'female', value: 'female', label: 'Женщина' },
@@ -309,23 +179,140 @@ export default {
 			],
 			group: [],
 			doctor: '',
-			send: false,
+			send: {
+				className: 'send-message',
+				isRequired: false,
+				event: 'click',
+				label: 'Не отправлять СМС',
+				id: 'send',
+				type: 'checkbox',
+				name: 'send-message',
+				placeholder: '',
+				checked: false,
+			},
 		},
 		address: {
-			index: '',
-			country: '',
-			region: '',
-			city: '',
-			street: '',
-			home: '',
+			index: {
+				className: 'client--address__index',
+				isRequired: false,
+				event: 'change',
+				label: 'Индекс',
+				id: 'index',
+				type: 'number',
+				name: 'index',
+				placeholder: 'Введите индекс города',
+				value: '',
+			},
+			country: {
+				className: 'client--address__country',
+				isRequired: false,
+				event: 'change',
+				label: 'Страна',
+				id: 'country',
+				type: 'text',
+				name: 'country',
+				placeholder: 'Введите страну',
+				value: '',
+			},
+			region: {
+				className: 'client--address__region',
+				isRequired: false,
+				event: 'change',
+				label: 'Область',
+				id: 'region',
+				type: 'text',
+				name: 'region',
+				placeholder: 'Введите область',
+				value: '',
+			},
+			city: {
+				className: 'client--info__city',
+				isRequired: true,
+				event: 'change',
+				label: 'Город',
+				id: 'city',
+				type: 'text',
+				name: 'city',
+				placeholder: 'Введите город',
+				message: 'Поле город должен быть заполнен',
+				value: '',
+			},
+			street: {
+				className: 'client--address__street',
+				isRequired: false,
+				event: 'change',
+				label: 'Улица',
+				id: 'street',
+				type: 'text',
+				name: 'street',
+				placeholder: 'Введите улицу',
+				value: '',
+			},
+			home: {
+				className: 'client--address__home',
+				isRequired: false,
+				event: 'change',
+				label: 'Дом',
+				id: 'home',
+				type: 'text',
+				name: 'home',
+				placeholder: 'Введите адрес дома',
+				value: '',
+			},
 		},
 		passport: {
 			type: '',
-			series: '',
-			id: '',
-			issued: '',
-			date: '',
+			series: {
+				className: 'client--address__series',
+				isRequired: false,
+				event: 'change',
+				label: 'Серия',
+				id: 'series',
+				type: 'text',
+				name: 'series',
+				placeholder: 'Введите серию',
+				value: '',
+			},
+			id: {
+				className: 'client--address__id',
+				isRequired: false,
+				event: 'change',
+				label: 'Номер',
+				id: 'number',
+				type: 'number',
+				name: 'number',
+				placeholder: 'Введите номер',
+				value: '',
+			},
+			issued: {
+				className: 'client--address__issued',
+				isRequired: false,
+				event: 'change',
+				label: 'Кем выдан',
+				id: 'issued',
+				type: 'text',
+				name: 'issued',
+				placeholder: 'Введите организацию',
+				value: '',
+			},
+			date: {
+				className: 'client--passport__issued-date',
+				isRequired: true,
+				event: 'change',
+				label: 'Дата выдачи',
+				id: 'issuedDate',
+				type: 'date',
+				name: 'issuedDate',
+				placeholder: '',
+				message: 'Поле дата выдачи должен быть заполнен',
+				value: '',
+			},
 		},
+		submits: [
+			{ message: 'Успешно создан!', status: 'OK', className: 'success' },
+			{ message: 'Проверьте форму заново!', status: 'ERROR', className: 'alert' },
+			{ message: 'Отправка...', status: 'PENDING', className: 'pending' },
+		],
 		submitStatus: null,
 	}),
 	methods: {
@@ -354,13 +341,13 @@ export default {
 				name: { value: { required } },
 			},
 			birthday: { value: { required, minLength: minLength(10) } },
-			phone: { required, minLength: minLength(11) },
+			phone: { value: { required, minLength: minLength(11) } },
 			group: { required },
 		},
-		address: { city: { required } },
+		address: { city: { value: { required } } },
 		passport: {
 			type: { required },
-			date: { required },
+			date: { value: { required } },
 		},
 	}),
 };
