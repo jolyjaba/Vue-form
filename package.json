@@ -9,7 +9,7 @@
 		"ie >= 8"
 	],
 	"scripts": {
-		"deploy": "gh-pages -d dist",
+		"deploy": "npm run build && git add . && git commit -m 'init' && git push origin && gh-pages -d dist",
 		"dev": "webpack --mode development --config webpack.dev.js",
 		"start": "webpack-dev-server --open 'Google Chrome' --mode development --config webpack.dev.js",
 		"build": "webpack --mode production --config webpack.prod.js"
