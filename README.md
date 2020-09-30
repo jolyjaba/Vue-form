@@ -1,2 +1,2 @@
 # Vue-Form
-https://jolyjaba.github.io/Vue-form/
+Link to GH Pages => https://jolyjaba.github.io/Vue-form/
